@@ -1,0 +1,138 @@
+---
+title: Practical Machine Learning (Peer Assessment)
+author: Andrea Carpignani
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: no
+    keep_md: yes
+  pdf_document: default
+---
+
+## Background
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website [here](http://groupware.les.inf.puc-rio.br/har). 
+
+## Data 
+The training data for this project are available here: 
+
+* <https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv>
+
+The test data are available here:
+
+* <https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv>
+
+The data for this project come from [this source](http://groupware.les.inf.puc-rio.br/har). If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment. 
+
+# Data Preparation
+
+Let us upload the packages that we shall be using in the sequel.
+```{r}
+library(ggplot2)
+library(caret)
+```
+
+The first thing to do is to download the data into the local directory.
+```{r, cache = TRUE}
+# Files url:
+trainUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+# Downloading files
+download.file(trainUrl, destfile = "./pml-training.csv", method = "curl")
+download.file(testUrl, destfile = "./pml-testing.csv", method = "curl")
+rm(trainUrl, testUrl)
+```
+
+Now we can upload the data into R.
+```{r, cache = TRUE}
+training <- read.csv("./pml-training.csv", na.strings = c("NA", "", "#DIV/0!"))
+testing <- read.csv("./pml-testing.csv", na.strings = c("NA", "", "#DIV/0!"))
+```
+
+## Data Exploration
+
+Let us see the dimension of the training set and the distribution of the variable `classe`, which is the one we wish to predict. It is also useful to see a bar chart of this variable.
+```{r}
+dim(training)
+dim(testing)
+
+table(training$classe)
+barchart(training$classe, xlab = "Frequency", ylab = "Classe", col = "blue")
+```
+
+
+Let us also transform this variable into a factor.
+```{r}
+training$classe <- factor(training$classe)
+```
+
+Let us check the number of missing values in the data set.
+```{r}
+nrow(training[!complete.cases(training),])
+```
+It looks like all rows in the data set have missing values. Let us see if there are specific variables where these missing values are.
+```{r}
+ncol(training[,!complete.cases(t(training))])
+```
+It seems reasonable to omit the variables with missing values, and only focus on those with no missing values.
+```{r}
+NA_list <- !complete.cases(t(training))
+training <- training[,!NA_list]
+testing <- testing[,!NA_list]
+rm(NA_list)
+```
+
+Let us also remove some columns that are not interesting for the prediction problem, which correspond to the first seven columns. Let us also remove the column labelled `id_problem` from the testing set.
+```{r}
+training <- training[,-(1:7)]
+testing <- testing[,-(1:7)]
+testing <- testing[,-ncol(testing)]
+```
+
+
+## Creating a validation set
+
+Once the data is processed, we wish to extract from the training set a subset to validate the model. Let us take the 60% of the set for the training and the 40% for the validation.
+```{r, cache = TRUE}
+set.seed(101001)
+inTrain <- createDataPartition(y = training$classe, p = 0.60, list = FALSE)
+train <- training[inTrain,]
+valid <- training[-inTrain,]
+```
+
+## Prediction Model
+
+This is a classification problem, so it looks natural to use a classification method. We proceed with training the model using the **random forest** algorithm with a 3-fold cross validation.
+
+```{r, cache = TRUE}
+control <- trainControl(method = "cv", number = 4)
+model <- train(classe ~ . , data = train, 
+               method = "rf", trControl = control)
+print(model)
+```
+
+## Validation
+
+Now we evaluate the model with the confusion matrix:
+
+```{r}
+valid_predict <- predict(model, newdata = valid)
+table(valid_predict)
+table(valid$classe)
+confusionMatrix(valid$classe, valid_predict)
+```
+
+# Testing the model
+
+Finally, we proceed with predicting the new values for the testing set provided.
+```{r}
+prediction <- predict(model, newdata = testing)
+print(prediction)
+```
+
+Let us also see a table of predictions
+```{r}
+table(prediction)
+```
+
+

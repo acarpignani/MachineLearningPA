@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Andrea Carpignani" />
+
+<meta name="date" content="2023-02-15" />
+
+<title>Practical Machine Learning (Peer Assessment)</title>
+
+<script src="Report_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="Report_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Report_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="Report_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="Report_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="Report_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="Report_files/navigation-1.1/tabsets.js"></script>
+<link href="Report_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="Report_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Practical Machine Learning (Peer
+Assessment)</h1>
+<h4 class="author">Andrea Carpignani</h4>
+<h4 class="date">2023-02-15</h4>
+
+</div>
+
+
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now
+possible to collect a large amount of data about personal activity
+relatively inexpensively. These type of devices are part of the
+quantified self movement – a group of enthusiasts who take measurements
+about themselves regularly to improve their health, to find patterns in
+their behavior, or because they are tech geeks. One thing that people
+regularly do is quantify how much of a particular activity they do, but
+they rarely quantify how well they do it. In this project, your goal
+will be to use data from accelerometers on the belt, forearm, arm, and
+dumbell of 6 participants. They were asked to perform barbell lifts
+correctly and incorrectly in 5 different ways. More information is
+available from the website <a
+href="http://groupware.les.inf.puc-rio.br/har">here</a>.</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The training data for this project are available here:</p>
+<ul>
+<li><a
+href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></li>
+</ul>
+<p>The test data are available here:</p>
+<ul>
+<li><a
+href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></li>
+</ul>
+<p>The data for this project come from <a
+href="http://groupware.les.inf.puc-rio.br/har">this source</a>. If you
+use the document you create for this class for any purpose please cite
+them as they have been very generous in allowing their data to be used
+for this kind of assignment.</p>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>Data Preparation</h1>
+<p>Let us upload the packages that we shall be using in the sequel.</p>
+<pre class="r"><code>library(ggplot2)
+library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<p>The first thing to do is to download the data into the local
+directory.</p>
+<pre class="r"><code># Files url:
+trainUrl &lt;- &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv&quot;
+testUrl &lt;- &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv&quot;
+
+# Downloading files
+download.file(trainUrl, destfile = &quot;./pml-training.csv&quot;, method = &quot;curl&quot;)
+download.file(testUrl, destfile = &quot;./pml-testing.csv&quot;, method = &quot;curl&quot;)
+rm(trainUrl, testUrl)</code></pre>
+<p>Now we can upload the data into R.</p>
+<pre class="r"><code>training &lt;- read.csv(&quot;./pml-training.csv&quot;, na.strings = c(&quot;NA&quot;, &quot;&quot;, &quot;#DIV/0!&quot;))
+testing &lt;- read.csv(&quot;./pml-testing.csv&quot;, na.strings = c(&quot;NA&quot;, &quot;&quot;, &quot;#DIV/0!&quot;))</code></pre>
+<div id="data-exploration" class="section level2">
+<h2>Data Exploration</h2>
+<p>Let us see the dimension of the training set and the distribution of
+the variable <code>classe</code>, which is the one we wish to predict.
+It is also useful to see a bar chart of this variable.</p>
+<pre class="r"><code>dim(training)</code></pre>
+<pre><code>## [1] 19622   160</code></pre>
+<pre class="r"><code>dim(testing)</code></pre>
+<pre><code>## [1]  20 160</code></pre>
+<pre class="r"><code>table(training$classe)</code></pre>
+<pre><code>## 
+##    A    B    C    D    E 
+## 5580 3797 3422 3216 3607</code></pre>
+<pre class="r"><code>barchart(training$classe, xlab = &quot;Frequency&quot;, ylab = &quot;Classe&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img
+src="Report_files/figure-html/unnamed-chunk-4-1.png" /><!-- --></p>
+<p>Let us also transform this variable into a factor.</p>
+<pre class="r"><code>training$classe &lt;- factor(training$classe)</code></pre>
+<p>Let us check the number of missing values in the data set.</p>
+<pre class="r"><code>nrow(training[!complete.cases(training),])</code></pre>
+<pre><code>## [1] 19622</code></pre>
+<p>It looks like all rows in the data set have missing values. Let us
+see if there are specific variables where these missing values are.</p>
+<pre class="r"><code>ncol(training[,!complete.cases(t(training))])</code></pre>
+<pre><code>## [1] 100</code></pre>
+<p>It seems reasonable to omit the variables with missing values, and
+only focus on those with no missing values.</p>
+<pre class="r"><code>NA_list &lt;- !complete.cases(t(training))
+training &lt;- training[,!NA_list]
+testing &lt;- testing[,!NA_list]
+rm(NA_list)</code></pre>
+<p>Let us also remove some columns that are not interesting for the
+prediction problem, which correspond to the first seven columns. Let us
+also remove the column labelled <code>id_problem</code> from the testing
+set.</p>
+<pre class="r"><code>training &lt;- training[,-(1:7)]
+testing &lt;- testing[,-(1:7)]
+testing &lt;- testing[,-ncol(testing)]</code></pre>
+</div>
+<div id="creating-a-validation-set" class="section level2">
+<h2>Creating a validation set</h2>
+<p>Once the data is processed, we wish to extract from the training set
+a subset to validate the model. Let us take the 60% of the set for the
+training and the 40% for the validation.</p>
+<pre class="r"><code>set.seed(101001)
+inTrain &lt;- createDataPartition(y = training$classe, p = 0.60, list = FALSE)
+train &lt;- training[inTrain,]
+valid &lt;- training[-inTrain,]</code></pre>
+</div>
+<div id="prediction-model" class="section level2">
+<h2>Prediction Model</h2>
+<p>This is a classification problem, so it looks natural to use a
+classification method. We proceed with training the model using the
+<strong>random forest</strong> algorithm with a 3-fold cross
+validation.</p>
+<pre class="r"><code>control &lt;- trainControl(method = &quot;cv&quot;, number = 4)
+model &lt;- train(classe ~ . , data = train, 
+               method = &quot;rf&quot;, trControl = control)
+print(model)</code></pre>
+<pre><code>## Random Forest 
+## 
+## 11776 samples
+##    52 predictor
+##     5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (4 fold) 
+## Summary of sample sizes: 8832, 8831, 8833, 8832 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy   Kappa    
+##    2    0.9864982  0.9829187
+##   27    0.9889609  0.9860355
+##   52    0.9824227  0.9777601
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was mtry = 27.</code></pre>
+</div>
+<div id="validation" class="section level2">
+<h2>Validation</h2>
+<p>Now we evaluate the model with the confusion matrix:</p>
+<pre class="r"><code>valid_predict &lt;- predict(model, newdata = valid)
+table(valid_predict)</code></pre>
+<pre><code>## valid_predict
+##    A    B    C    D    E 
+## 2243 1506 1383 1281 1433</code></pre>
+<pre class="r"><code>table(valid$classe)</code></pre>
+<pre><code>## 
+##    A    B    C    D    E 
+## 2232 1518 1368 1286 1442</code></pre>
+<pre class="r"><code>confusionMatrix(valid$classe, valid_predict)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 2229    0    3    0    0
+##          B   14 1497    6    1    0
+##          C    0    8 1350   10    0
+##          D    0    0   19 1267    0
+##          E    0    1    5    3 1433
+## 
+## Overall Statistics
+##                                          
+##                Accuracy : 0.9911         
+##                  95% CI : (0.9887, 0.993)
+##     No Information Rate : 0.2859         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.9887         
+##                                          
+##  Mcnemar&#39;s Test P-Value : NA             
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9938   0.9940   0.9761   0.9891   1.0000
+## Specificity            0.9995   0.9967   0.9972   0.9971   0.9986
+## Pos Pred Value         0.9987   0.9862   0.9868   0.9852   0.9938
+## Neg Pred Value         0.9975   0.9986   0.9949   0.9979   1.0000
+## Prevalence             0.2859   0.1919   0.1763   0.1633   0.1826
+## Detection Rate         0.2841   0.1908   0.1721   0.1615   0.1826
+## Detection Prevalence   0.2845   0.1935   0.1744   0.1639   0.1838
+## Balanced Accuracy      0.9966   0.9954   0.9867   0.9931   0.9993</code></pre>
+</div>
+</div>
+<div id="testing-the-model" class="section level1">
+<h1>Testing the model</h1>
+<p>Finally, we proceed with predicting the new values for the testing
+set provided.</p>
+<pre class="r"><code>prediction &lt;- predict(model, newdata = testing)
+print(prediction)</code></pre>
+<pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E</code></pre>
+<p>Let us also see a table of predictions</p>
+<pre class="r"><code>table(prediction)</code></pre>
+<pre><code>## prediction
+## A B C D E 
+## 7 8 1 1 3</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
